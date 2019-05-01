@@ -46,25 +46,34 @@ func CompileBFOP(runes []rune) ([]Exec, error) {
 	for _, c := range runes {
 		switch c {
 		case ZWSINCP:
-			// increment
+			pg = append(pg, Exec{INCPTR, 0})
 		case ZWSDECP:
-			// decrement
+			pg = append(pg, Exec{DECPTR, 0})
 		case ZWSINCV:
-			// increment value
+			pg = append(pg, Exec{INCVAL, 0})
 		case ZWSDECV:
-			// decrement value
+			pg = append(pg, Exec{DECVAL, 0})
 		case ZWSOUT:
-			// writeout
+			pg = append(pg, Exec{OUT, 0})
 		case ZWSINP:
-			// input
+			pg = append(pg, Exec{INP, 0})
 		case ZWSJPF:
-			// jump forward
+			pg = append(pg, Exec{JPF, 0})
+			stk = append(stk, PC)
 		case ZWSJPB:
-			// jump back
+			if len(stk) == 0 {
+				return nil, errors.New("compilation error")
+			}
+
+			JUMP_PC = stk[len(stk)-1]
+			stk = stk[:len(stk)-1]
+			PC = append(PC, Exec{JPB, JUMP_PC})
+			PC[JUMP_PC].operand = PC
+
 		default:
-			pc--
+			PC--
 		}
-		pc++
+		PC++
 	}
 	if len(stk) != 0 {
 		return nil, errors.New("compilation error")
