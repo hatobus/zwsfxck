@@ -22,14 +22,14 @@ const (
 	JPF
 	JPB
 
-	ZWSINCP []rune = []rune("a")[0]
-	ZWSDECP        = []rune("b")[0]
-	ZWSINCV        = []rune("c")[0]
-	ZWSDECV        = []rune("d")[0]
-	ZWSOUT         = []rune("e")[0]
-	ZWSINP         = []rune("f")[0]
-	ZWSJPF         = []rune("g")[0]
-	ZWSJPB         = []rune("h")[0]
+	ZWSINCP uint16 = 8259
+	ZWSDECP uint16 = 8000
+	ZWSINCV uint16 = 8001
+	ZWSDECV uint16 = 8002
+	ZWSOUT  uint16 = 8003
+	ZWSINP  uint16 = 8004
+	ZWSJPF  uint16 = 8005
+	ZWSJPB  uint16 = 8006
 )
 
 type Exec struct {
@@ -44,7 +44,7 @@ func CompileBFOP(runes []rune) ([]Exec, error) {
 	pg := make([]Exec, len(runes))
 
 	for _, c := range runes {
-		switch c {
+		switch uint16(c) {
 		case ZWSINCP:
 			pg = append(pg, Exec{INCPTR, 0})
 		case ZWSDECP:
@@ -83,7 +83,7 @@ func CompileBFOP(runes []rune) ([]Exec, error) {
 }
 
 func Execute(program []Exec) {
-	buf := make([]uint16, MAX_BUFFER_SIZE)
+	buf := make([]uint16, MAX_BUF_SIZE)
 	var ptr uint16 = 0
 	reader := bufio.NewReader(os.Stdin)
 
@@ -100,8 +100,8 @@ func Execute(program []Exec) {
 		case OUT:
 			fmt.Printf("%c", buf[ptr])
 		case INP:
-			rval, err := reader.ReadByte()
-			buf[ptr] = int16(rval)
+			rval, _ := reader.ReadByte()
+			buf[ptr] = uint16(rval)
 		case JPF:
 			if buf[ptr] == 0 {
 				pc = int(program[pc].operand)
@@ -111,9 +111,10 @@ func Execute(program []Exec) {
 				pc = int(program[pc].operand)
 			}
 		default:
-			panic("this operator is not arrocated : ", program[pc].operator)
+			// panic("this operator is not arrocated : " + strconv.Itoa(program[pc].operand))
 		}
 	}
+	fmt.Println()
 }
 
 func main() {
