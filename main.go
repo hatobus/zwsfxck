@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -20,14 +22,14 @@ const (
 	JPF
 	JPB
 
-	ZWSINCP = []rune("a")[0]
-	ZWSDECP = []rune("b")[0]
-	ZWSINCV = []rune("c")[0]
-	ZWSDECV = []rune("d")[0]
-	ZWSOUT  = []rune("e")[0]
-	ZWSINP  = []rune("f")[0]
-	ZWSJPF  = []rune("g")[0]
-	ZWSJPB  = []rune("h")[0]
+	ZWSINCP []rune = []rune("a")[0]
+	ZWSDECP        = []rune("b")[0]
+	ZWSINCV        = []rune("c")[0]
+	ZWSDECV        = []rune("d")[0]
+	ZWSOUT         = []rune("e")[0]
+	ZWSINP         = []rune("f")[0]
+	ZWSJPF         = []rune("g")[0]
+	ZWSJPB         = []rune("h")[0]
 )
 
 type Exec struct {
@@ -36,12 +38,10 @@ type Exec struct {
 }
 
 func CompileBFOP(runes []rune) ([]Exec, error) {
-	// panic("not impl")
-
 	var PC uint16 = 0
 	var JUMP_PC uint16 = 0
 	stk := make([]uint16, 0)
-	pg := make(Exec, len(runes))
+	pg := make([]Exec, len(runes))
 
 	for _, c := range runes {
 		switch c {
@@ -67,8 +67,8 @@ func CompileBFOP(runes []rune) ([]Exec, error) {
 
 			JUMP_PC = stk[len(stk)-1]
 			stk = stk[:len(stk)-1]
-			PC = append(PC, Exec{JPB, JUMP_PC})
-			PC[JUMP_PC].operand = PC
+			pg = append(pg, Exec{JPB, JUMP_PC})
+			pg[JUMP_PC].operand = PC
 
 		default:
 			PC--
@@ -80,6 +80,40 @@ func CompileBFOP(runes []rune) ([]Exec, error) {
 	}
 
 	return pg, nil
+}
+
+func Execute(program []Exec) {
+	buf := make([]uint16, MAX_BUFFER_SIZE)
+	var ptr uint16 = 0
+	reader := bufio.NewReader(os.Stdin)
+
+	for pc := 0; pc < len(program); pc++ {
+		switch program[pc].operator {
+		case INCPTR:
+			ptr++
+		case DECPTR:
+			ptr++
+		case INCVAL:
+			buf[ptr]++
+		case DECVAL:
+			buf[ptr]--
+		case OUT:
+			fmt.Printf("%c", buf[ptr])
+		case INP:
+			rval, err := reader.ReadByte()
+			buf[ptr] = int16(rval)
+		case JPF:
+			if buf[ptr] == 0 {
+				pc = int(program[pc].operand)
+			}
+		case JPB:
+			if buf[ptr] > 0 {
+				pc = int(program[pc].operand)
+			}
+		default:
+			panic("this operator is not arrocated : ", program[pc].operator)
+		}
+	}
 }
 
 func main() {
@@ -97,5 +131,13 @@ func main() {
 	}
 
 	contents := string(c)
+
+	program, err := CompileBFOP([]rune(contents))
+	if err != nil {
+		log.Error("Compile error!")
+		panic(err)
+	}
+
+	log.Println(program)
 
 }
