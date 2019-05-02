@@ -22,14 +22,14 @@ const (
 	JPF
 	JPB
 
-	ZWSINCP uint16 = 8203 // U+200B ... +
-	ZWSDECP uint16 = 8204 // U+200C ... -
-	ZWSINCV uint16 = 8205 // U+200D ... >
-	ZWSDECV uint16 = 8206 // U+200E ... <
-	ZWSOUT  uint16 = 8207 // U+200F ... ,
-	ZWSINP  uint16 = 8233 // U+2029 ... .
-	ZWSJPF  uint16 = 8234 // U+202A ... [
-	ZWSJPB  uint16 = 8235 // U+202B ... ]
+	ZWSINCP uint16 = 8205 // U+200B ... >
+	ZWSDECP uint16 = 8206 // U+200C ... <
+	ZWSINCV uint16 = 8203 // U+200D ... +
+	ZWSDECV uint16 = 8204 // U+200E ... -
+	ZWSOUT  uint16 = 8207 // U+200F ... .
+	ZWSINP  uint16 = 8234 // U+202A ... ,
+	ZWSJPF  uint16 = 8235 // U+202B ... [
+	ZWSJPB  uint16 = 8236 // U+202C ... ]
 )
 
 type Exec struct {
@@ -41,24 +41,24 @@ func CompileBFOP(runes []rune) ([]Exec, error) {
 	var PC uint16 = 0
 	var JUMP_PC uint16 = 0
 	stk := make([]uint16, 0)
-	pg := make([]Exec, len(runes))
+	pg := make([]Exec, 0, len(runes))
 
 	for _, c := range runes {
 		switch uint16(c) {
 		case ZWSINCP:
-			pg = append(pg, Exec{INCPTR, 0})
+			pg = append(pg, Exec{operator: INCPTR, operand: 0})
 		case ZWSDECP:
-			pg = append(pg, Exec{DECPTR, 0})
+			pg = append(pg, Exec{operator: DECPTR, operand: 0})
 		case ZWSINCV:
-			pg = append(pg, Exec{INCVAL, 0})
+			pg = append(pg, Exec{operator: INCVAL, operand: 0})
 		case ZWSDECV:
-			pg = append(pg, Exec{DECVAL, 0})
+			pg = append(pg, Exec{operator: DECVAL, operand: 0})
 		case ZWSOUT:
-			pg = append(pg, Exec{OUT, 0})
+			pg = append(pg, Exec{operator: OUT, operand: 0})
 		case ZWSINP:
-			pg = append(pg, Exec{INP, 0})
+			pg = append(pg, Exec{operator: INP, operand: 0})
 		case ZWSJPF:
-			pg = append(pg, Exec{JPF, 0})
+			pg = append(pg, Exec{operator: JPF, operand: 0})
 			stk = append(stk, PC)
 		case ZWSJPB:
 			if len(stk) == 0 {
@@ -83,7 +83,7 @@ func CompileBFOP(runes []rune) ([]Exec, error) {
 }
 
 func Execute(program []Exec) {
-	buf := make([]uint16, MAX_BUF_SIZE)
+	buf := make([]uint16, 0, MAX_BUF_SIZE)
 	var ptr uint16 = 0
 	reader := bufio.NewReader(os.Stdin)
 
@@ -100,8 +100,8 @@ func Execute(program []Exec) {
 		case OUT:
 			fmt.Printf("%c", buf[ptr])
 		case INP:
-			rval, _ := reader.ReadByte()
-			buf[ptr] = uint16(rval)
+			read, _ := reader.ReadByte()
+			buf[ptr] = uint16(read)
 		case JPF:
 			if buf[ptr] == 0 {
 				pc = int(program[pc].operand)
@@ -111,10 +111,11 @@ func Execute(program []Exec) {
 				pc = int(program[pc].operand)
 			}
 		default:
-			// panic("this operator is not arrocated : " + strconv.Itoa(program[pc].operand))
+			log.Fatalf("this operator is not arrocated : %v", program[pc].operator)
 		}
+		// log.Printf("PC : %v, operator : %v\n", pc, program[pc].operator)
 	}
-	fmt.Println()
+	fmt.Println("end")
 }
 
 func main() {
@@ -140,5 +141,7 @@ func main() {
 	}
 
 	log.Println(program)
+
+	Execute(program)
 
 }
