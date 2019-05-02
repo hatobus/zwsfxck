@@ -22,14 +22,14 @@ const (
 	JPF
 	JPB
 
-	ZWSINCP uint16 = 8259
-	ZWSDECP uint16 = 8000
-	ZWSINCV uint16 = 8001
-	ZWSDECV uint16 = 8002
-	ZWSOUT  uint16 = 8003
-	ZWSINP  uint16 = 8004
-	ZWSJPF  uint16 = 8005
-	ZWSJPB  uint16 = 8006
+	ZWSINCP uint16 = 8203 // U+200B ... +
+	ZWSDECP uint16 = 8204 // U+200C ... -
+	ZWSINCV uint16 = 8205 // U+200D ... >
+	ZWSDECV uint16 = 8206 // U+200E ... <
+	ZWSOUT  uint16 = 8207 // U+200F ... ,
+	ZWSINP  uint16 = 8232 // U+2028 ... .
+	ZWSJPF  uint16 = 8233 // U+2029 ... [
+	ZWSJPB  uint16 = 8234 // U+202A ... ]
 )
 
 type Exec struct {
