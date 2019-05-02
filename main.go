@@ -83,7 +83,7 @@ func CompileBFOP(runes []rune) ([]Exec, error) {
 }
 
 func Execute(program []Exec) {
-	buf := make([]uint16, 0, MAX_BUF_SIZE)
+	buf := make([]uint16, MAX_BUF_SIZE)
 	var ptr uint16 = 0
 	reader := bufio.NewReader(os.Stdin)
 
@@ -115,7 +115,6 @@ func Execute(program []Exec) {
 		}
 		// log.Printf("PC : %v, operator : %v\n", pc, program[pc].operator)
 	}
-	fmt.Println("end")
 }
 
 func main() {
@@ -139,8 +138,6 @@ func main() {
 		log.Error("Compile error!")
 		panic(err)
 	}
-
-	log.Println(program)
 
 	Execute(program)
 
