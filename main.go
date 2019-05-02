@@ -27,9 +27,9 @@ const (
 	ZWSINCV uint16 = 8205 // U+200D ... >
 	ZWSDECV uint16 = 8206 // U+200E ... <
 	ZWSOUT  uint16 = 8207 // U+200F ... ,
-	ZWSINP  uint16 = 8232 // U+2028 ... .
-	ZWSJPF  uint16 = 8233 // U+2029 ... [
-	ZWSJPB  uint16 = 8234 // U+202A ... ]
+	ZWSINP  uint16 = 8233 // U+2029 ... .
+	ZWSJPF  uint16 = 8234 // U+202A ... [
+	ZWSJPB  uint16 = 8235 // U+202B ... ]
 )
 
 type Exec struct {
@@ -62,7 +62,7 @@ func CompileBFOP(runes []rune) ([]Exec, error) {
 			stk = append(stk, PC)
 		case ZWSJPB:
 			if len(stk) == 0 {
-				return nil, errors.New("compilation error")
+				return nil, errors.New("compilation error : stack length = 0")
 			}
 
 			JUMP_PC = stk[len(stk)-1]
