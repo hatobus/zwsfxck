@@ -1,5 +1,9 @@
 # zwsfxck
 
+zwsfxck is the extends of brain fxck with zero width spaces.
+
+zero width space have no space and couldn't see from human.
+
 ## translate
 
 ```
