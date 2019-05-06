@@ -22,10 +22,10 @@ const (
 	JPF
 	JPB
 
-	ZWSINCP uint16 = 8205 // U+200B ... >
-	ZWSDECP uint16 = 8206 // U+200C ... <
-	ZWSINCV uint16 = 8203 // U+200D ... +
-	ZWSDECV uint16 = 8204 // U+200E ... -
+	ZWSINCP uint16 = 8203 // U+200B ... >
+	ZWSDECP uint16 = 8204 // U+200C ... <
+	ZWSINCV uint16 = 8205 // U+200D ... +
+	ZWSDECV uint16 = 8206 // U+200E ... -
 	ZWSOUT  uint16 = 8207 // U+200F ... .
 	ZWSINP  uint16 = 8234 // U+202A ... ,
 	ZWSJPF  uint16 = 8235 // U+202B ... [
@@ -92,7 +92,7 @@ func Execute(program []Exec) {
 		case INCPTR:
 			ptr++
 		case DECPTR:
-			ptr++
+			ptr--
 		case INCVAL:
 			buf[ptr]++
 		case DECVAL:
