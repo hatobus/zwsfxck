@@ -16,8 +16,7 @@ Decrement the byte at the data pointer (-) ... U+200E
 O‌‎‬​‏‎‎‎‎‎‎utput the byte at the data po‎‏‍‍‏‍‍‍‍‍‍‍‍‏‎‎‏‍‍‍‍‍‏‎‎‎‎inter (.) ... U+200F
 Accept one byte of input, string its value in the byte at the data pointeter (,) ... U202A
 
-If the byte at the data pointer is zero, then instead of moving the instruction pointer forward to the next command ([) ... U+202B
-‎‎‎‏‌‍‍‍‍‍‍‍
+If the byte at the data pointer is zero, then instead of moving the instruction pointer forward to the next command ([) ... U+202B‎‎‎‏‌‍‍‍‍‍‍‍
 If the byte at the data pointer is nonzero, then instead of moving the instruction pointer forward to the next command (]) ... U202C
 ```
 ‍‍‫​‎‎‎‎‎‎‎‌‎
