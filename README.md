@@ -56,6 +56,19 @@ $ cat zwsample.bf | xxd
 00000160: 808d e280 8f0a                           ......
 ```
 
+## Build
+```
+$ go build -o ./zwsfxck
+```
+
+```
+$ ./zwsfxck zwsample.bf
+
+Hello world
+```
+
+
+
 ## Example of use
 
 - encrypt a message
